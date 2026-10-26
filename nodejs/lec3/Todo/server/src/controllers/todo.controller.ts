@@ -31,3 +31,58 @@ export const create = asyncHandler(async(req:Request, res:Response)=>{
         new ApiResponse(201, {todo}, "Todo created sucessfully")
     );
 });
+
+export const update = asyncHandler(async(req:Request, res:Response)=>{
+    const user = req.user;
+    const todoId = req.query.id;
+    let {title, task} = req.body;
+    
+    if(typeof title!=="string" || typeof task!=="string" || typeof todoId!="string") {
+        throw new ApiError(402, "Todo id is required");
+    }
+    
+    title = title.trim();
+    task = task.trim();
+
+    if (!title || !task) {
+        throw new ApiError(400, "Title and task cannot be empty");
+    }
+    const todo = await Todo.findById(todoId);
+    
+    if(!todo || todo===null) throw new ApiError(404, "Todo not found");
+
+    if(String(todo.user)!==String(user!.id)){
+        throw new ApiError(403, "User did not match");
+    }
+
+    todo.title = title;
+    todo.task = task;
+    await todo.save();
+
+    return res.status(200).json(
+        new ApiResponse(200, {todo}, "Todo updated sucessfully")
+    );
+});
+
+export const deleteTodo = asyncHandler(async(req:Request, res:Response)=>{
+    const user =  req.user;
+    const todoId = req.query.id;
+
+    if(!todoId || typeof todoId !=="string"){
+        throw new ApiError(400, "Todo id is required");
+    }
+    
+    const todo = await Todo.findById(todoId);
+    
+    if(!todo) throw new ApiError(404, "Todo not found");
+    
+    if(String(todo.user)!==String(user!.id)){
+        throw new ApiError(403, "User did not match");
+    }
+
+    await Todo.findByIdAndDelete(todo.id);
+
+    return res.status(200).json(
+        new ApiResponse(200, {}, "Todo deleted sucessfully")
+    );
+});
