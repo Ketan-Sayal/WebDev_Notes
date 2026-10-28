@@ -31,7 +31,7 @@ export const signup = asyncHandler(async(req:Request, res:Response)=>{
         password:hashPassword
     });
 
-    const userSent = await User.findById(userCreated._id).select("-password");
+    const userSent = await User.findById(userCreated._id).select("-password").populate("todos");
 
     if(!userSent) throw new ApiError(404, "User not found");
 
@@ -64,7 +64,7 @@ export const signin = asyncHandler(async(req:Request, res:Response)=>{
         throw new ApiError(403, "Invalid password");
     }
 
-    const userSent = await User.findById(user._id).select("-password");
+    const userSent = await User.findById(user._id).select("-password").populate("todos");
 
     if(!userSent) throw new ApiError(404, "User not found");
 
@@ -82,3 +82,11 @@ export const signout = asyncHandler(async(req:Request, res:Response)=>{
         new ApiResponse(200, {}, "User signed out sucessfully")
     );
 });
+
+export const getUserByToken = asyncHandler(async(req:Request, res:Response)=>{
+    const user = req.user;
+    const userSent = await User.findById(user!.id);
+    return res.status(200).json(
+        new ApiResponse(200, {user:userSent}, "User sent sucessfully")
+    );
+})

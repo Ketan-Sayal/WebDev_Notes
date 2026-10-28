@@ -7,7 +7,7 @@ const TodoSchema = new Schema({
         type:Schema.Types.ObjectId,
         ref:"User"
     },
-    conpleted:{
+    completed:{
         type:Boolean,
         default:false
     }

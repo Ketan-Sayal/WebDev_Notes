@@ -1,8 +1,28 @@
 
-import { Link, Outlet } from "react-router-dom";
+import { Link, Outlet, useNavigate } from "react-router-dom";
 import { ShieldCheck } from "lucide-react";
+import { useEffect } from "react";
+import axios from "axios";
+import { config } from "../config";
 
 function AuthLayout() {
+  const navigate = useNavigate();
+   useEffect(()=>{
+    const fnc = async()=>{
+      try {
+        const token = localStorage.getItem("taskflow_token");
+        if(token){
+          await axios.get(`${config.backend_url}/api/v1/user/token`, {headers:{Authorization:token}});
+          navigate("/dashboard");
+          return;
+        }
+      } catch (error) {
+        console.log(error);
+      }
+    }
+    fnc();
+  }, []);
+
   return (
     <div className="min-h-screen bg-gray-50 flex flex-col">
       {/* Header */}

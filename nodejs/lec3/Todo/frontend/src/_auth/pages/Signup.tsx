@@ -1,5 +1,14 @@
+
 import { Link, useNavigate } from "react-router-dom";
-import { User, Mail, Lock, Eye, AlertCircle, LoaderCircle } from "lucide-react";
+import {
+  User,
+  Mail,
+  Lock,
+  Eye,
+  EyeOff,
+  AlertCircle,
+  LoaderCircle,
+} from "lucide-react";
 import { useForm } from "react-hook-form";
 import { useState } from "react";
 import axios from "axios";
@@ -30,6 +39,7 @@ function Signup() {
 
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState("");
+  const [showPassword, setShowPassword] = useState(false);
 
   const onSubmit = async (data: FormValues) => {
     setIsLoading(true);
@@ -44,7 +54,7 @@ function Signup() {
       );
 
       const { user, token } = res.data.data;
-      
+
       if (!user || !token) {
         throw new Error("Invalid response received from server.");
       }
@@ -75,6 +85,7 @@ function Signup() {
         <h2 className="text-2xl font-bold text-gray-900">
           Create an account
         </h2>
+
         <p className="mt-2 text-sm text-gray-500">
           Get started and organize your tasks with TaskFlow.
         </p>
@@ -86,20 +97,24 @@ function Signup() {
           role="alert"
           className="mb-5 flex items-start gap-3 rounded-xl border border-red-200 bg-red-50 p-4 text-red-700"
         >
-          <AlertCircle size={20} className="mt-0.5 shrink-0" />
+          <AlertCircle
+            size={20}
+            className="mt-0.5 shrink-0"
+          />
 
           <div>
             <p className="text-sm font-semibold">
               Signup failed
             </p>
-            <p className="mt-1 text-sm leading-5">
-              {error}
-            </p>
+            <p className="mt-1 text-sm leading-5">{error}</p>
           </div>
         </div>
       )}
 
-      <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
+      <form
+        onSubmit={handleSubmit(onSubmit)}
+        className="space-y-4"
+      >
         {/* Username */}
         <div>
           <label
@@ -133,7 +148,10 @@ function Signup() {
           </div>
 
           {errors.username && (
-            <p className="mt-1.5 text-sm text-red-600" role="alert">
+            <p
+              className="mt-1.5 text-sm text-red-600"
+              role="alert"
+            >
               {errors.username.message}
             </p>
           )}
@@ -167,12 +185,19 @@ function Signup() {
               }`}
               {...register("email", {
                 required: "Email is required",
+                pattern: {
+                  value: /^[^\s@]+@[^\s@]+\.[^\s@]+$/,
+                  message: "Please enter a valid email address",
+                },
               })}
             />
           </div>
 
           {errors.email && (
-            <p className="mt-1.5 text-sm text-red-600" role="alert">
+            <p
+              className="mt-1.5 text-sm text-red-600"
+              role="alert"
+            >
               {errors.email.message}
             </p>
           )}
@@ -195,7 +220,7 @@ function Signup() {
 
             <input
               id="password"
-              type="password"
+              type={showPassword ? "text" : "password"}
               placeholder="Create a password"
               disabled={isLoading}
               aria-invalid={!!errors.password}
@@ -209,14 +234,31 @@ function Signup() {
               })}
             />
 
-            <Eye
-              className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400"
-              size={18}
-            />
+            {/* Show / Hide Password */}
+            <button
+              type="button"
+              onClick={() =>
+                setShowPassword((prev) => !prev)
+              }
+              aria-label={
+                showPassword ? "Hide password" : "Show password"
+              }
+              aria-pressed={showPassword}
+              className="absolute right-3 top-1/2 -translate-y-1/2 rounded text-gray-400 hover:text-gray-600 focus:outline-none focus:ring-2 focus:ring-blue-500"
+            >
+              {showPassword ? (
+                <EyeOff size={18} />
+              ) : (
+                <Eye size={18} />
+              )}
+            </button>
           </div>
 
           {errors.password && (
-            <p className="mt-1.5 text-sm text-red-600" role="alert">
+            <p
+              className="mt-1.5 text-sm text-red-600"
+              role="alert"
+            >
               {errors.password.message}
             </p>
           )}
@@ -230,7 +272,10 @@ function Signup() {
         >
           {isLoading ? (
             <>
-              <LoaderCircle size={19} className="animate-spin" />
+              <LoaderCircle
+                size={19}
+                className="animate-spin"
+              />
               Creating account...
             </>
           ) : (
