@@ -10,6 +10,6 @@
 // Rendering, State and Component:
 /**
  * Rendering: It is the combination of state and cmponent we take a state and put it on the dom based on the component.
- * State: Its a js object whit tells the state of the application.
+ * State: Its a js object which tells the state of the application.
  * Component: Its task is to render on the screen based on the state. 
  */
