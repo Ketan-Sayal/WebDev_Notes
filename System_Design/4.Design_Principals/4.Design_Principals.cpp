@@ -112,6 +112,7 @@ int main(){
 /**
  * A class should be open for extension(new feature addition) and close for modification(old class change{not}).
  * We cannot add a new method in the old class so we will use inheritance, abstraction and polymorphism.
+ * Loosely coupled.
  * Client--->Interface--->Class.
  */
 
@@ -120,29 +121,39 @@ int main(){
  * Its a blueprint of a class.
  * Its contract that tells the client what this class can do.
  */
-
 class Persistence{
     public:
         virtual void save(ShoppingCart *cart) = 0;
 };
 
-class MongoPersistence{
+class MongoPersistence:public Persistence{
     public:
         void save(ShoppingCart *cart){
             cout<<"Saving to mongodb database";
         }
 };
 
-class SqlPersistence{
+class SqlPersistence:public Persistence{
     public:
         void save(ShoppingCart *cart){
             cout<<"Saving to sql database";
         }
 };
 
-class FilePersistence{
+class FilePersistence:public Persistence{
     public:
         void save(ShoppingCart *cart){
             cout<<"Saving to file";
         }
 };
+
+
+// L: Liscov substitution principle
+/**
+ * Sub-class should be able to substitutable for their base class / parent class.
+ * Suppose we have A(Parent) and B(Child) then LSp means we can use B as a refence of A and use it and our code will be fine.
+ */  
+// Why its changed so much?
+/**
+ * Sometimes in subclass we throw exception while overriding the method to limit its reach that breaks LSP.
+ */

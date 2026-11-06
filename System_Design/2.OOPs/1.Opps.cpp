@@ -49,7 +49,7 @@
 
 // Encapsulation:
 /**
- * - Combining variables and methods together as a single unit + Data SSecurity.
+ * - Combining variables and methods together as a single unit + Data Security.
  */
 
 #include<iostream>
