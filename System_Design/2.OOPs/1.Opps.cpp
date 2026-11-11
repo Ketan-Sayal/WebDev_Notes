@@ -12,7 +12,7 @@
 // Objects:
 /**
  * - Real world entites.
- * - Objects: Chaaracterstics, Behaviour
+ * - Objects: Characterstics, Behaviour
  * e.g: Car:
     
     Characterstics:

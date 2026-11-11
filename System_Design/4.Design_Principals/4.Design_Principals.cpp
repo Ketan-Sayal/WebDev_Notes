@@ -152,8 +152,40 @@ class FilePersistence:public Persistence{
 /**
  * Sub-class should be able to substitutable for their base class / parent class.
  * Suppose we have A(Parent) and B(Child) then LSp means we can use B as a refence of A and use it and our code will be fine.
+ * 
+ * Guide lines:
+  - Signature rule: Arguments of the methods should be of same type and no. Return type of a fn should be the orignal return type or should be narrower(Child class of that return type) return type. The exception thrown in the child class of the iverriden fn should be of narrower or of same type.
+  - Property rule:{
+        - invarient: Its a rule that is always true.
+        
+        - 1. Class invarient: A rule i.e true for that class always.(Follows the rule through comment)
+          e.g: We have a class Account and it has a rule that says balance can't be negitive. But the child class of Account i.e CheatAccount i.e breaking that rule, which breaks class invarient rule.
+        - 2. History constraint: If the parent has defined something then child must implement it.[No implementation errors are not allowed]
+    }
+
+  - Method rule{
+    - 1. Pre condition: The condition should followed before implementing the class or fn. The child class can weaken or copy same implement the condition but cannot strengthen it.
+    e.g: Account i.e having a fn check password fn (8 char normally password) then the child class of this class is AdminAccount that has checkPassword() (6 characters).So it follows LSP.
+    - 2. Post condition: The condition should followed after implementing the class or fn. The child class cannot weaken the constraint but copy can same implement the condition or can strengthen the constraint.
+    e.g: Car can brake() and decrease speed. If i have a child i.e electric car that says i will decrease the speed but increase charging then it also follows LSP. 
+  }
  */  
 // Why its changed so much?
 /**
  * Sometimes in subclass we throw exception while overriding the method to limit its reach that breaks LSP.
+ */
+
+// I: Interface segregation Principle:
+/*
+ - Instead of creating a gernal purpose interface we will create multiple interfaces based on client purpose.
+ - The client should not be forced to use the method it doesnot need.
+ e.g: 
+*/
+
+// D: Dependency inversion principle
+/**
+ * High level module should not depend on low level modulebut ratherboth should depend on abstraction.
+ * Both should not directly interact but though abstraction they should interact.
+ * e.g: Application(High level module)----> Db abstract class ---> MongDb(Low-level module)--->database. i.e  DIP.
+ * Always work with OCP. 
  */
