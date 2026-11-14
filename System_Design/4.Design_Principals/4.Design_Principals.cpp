@@ -184,7 +184,7 @@ class FilePersistence:public Persistence{
 
 // D: Dependency inversion principle
 /**
- * High level module should not depend on low level modulebut ratherboth should depend on abstraction.
+ * High level module should not depend on low level modulebut rather both should depend on abstraction.
  * Both should not directly interact but though abstraction they should interact.
  * e.g: Application(High level module)----> Db abstract class ---> MongDb(Low-level module)--->database. i.e  DIP.
  * Always work with OCP. 
