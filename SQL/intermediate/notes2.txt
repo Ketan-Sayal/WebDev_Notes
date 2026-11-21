@@ -1,0 +1,207 @@
+// SQL Functions:
+- Its a build in code block that takes an input and gives a output after processing input.
+
+- Types:
+-- Row level fns: Takes 1 input and produces 1 output e.g: LOWER().
+--- 1. String fns
+
+---- a. Manupulation: UPPER(), LOWER(), REPLACE(), TRIM(), CONCAT()
+----- CONCAT(): Used to combine 2 or more colomns values together in a single colomn. e.g: CONCAT(col1, col2, value, col3);
+----- UPPER(): Used to convert the whole value or colomn value to uppercase. e.g: UPPER(col_name/value)
+----- LOWER(): Used to convert the whole value or colomn value to lowercase. e.g: LOWER(col_name/value)
+----- TRIM(): Used to remove leading or trailing whitespaces. e.g: TRIM(col_name/value)
+----- REPLACE(): Used to repalace a character of a value or colomn value to some other character. e.g: REPLACE(col_name/value, character_to_replace, new_character);
+
+---- b. Calculation: LEN():
+----- LEN(): Used to count the number of characters in the given value(any data-type).
+
+---- c. String extraction: LEFT(), RIGHT(), SUBSTRING()
+----- LEFT(): Used to get the given no. of characters from the start. e.g: LEFT(colomn/value, no_of_characters);
+----- RIGHT(): Used to get the given no. of characters from the last. e.g: RIGHT(colomn/value, no_of_characters);
+----- SUBSTRING(): Used to get the given no. of characters from your given position. e.g: SUBSTRING(value/colomn, start, no_of_chars)
+
+--- 2. Numeric fns
+
+---- a. ROUND(): Round off a decimal number tto its nearest value(X<5=>x=0 else next num to the prev num). e.g: ROUND(3.5, 1) => 4.0
+---- b. ABS(): converts a negitive number to a postive number. e.g: ABS(-10)=>10
+
+--- 3. Date and time fns:
+---- Date and time together is called date and time in SQL. e.g: 2026-06-20 18:55:45
+---- GETDATE(): Gets current date.
+
+---- Part Extraction:
+----- DAY(): Gets the Day from the date. Gives out number
+----- MONTH(): Gets the Month from the date. Gives out number
+----- YEAR(): Gets the Year from the date. Gives out number
+----- DATEPART(): Gives specific part of date as number. Secifically the "week" and "quater". e.g: DATEPART(part, date), DATEPART(month/year/week, '2025-08-06'). Gives out number
+----- DATENAME(): Gives the name of week-days and the month. For day and year it gives string but as numbers. e.g: DATENAME(part, date);.  Gives out String
+----- DATETRUNC(): Truncate a date to a spectic part. e.g: DATETRUC(part, date). Keep date till that part other parts after it becomes 00 for time and 01 for date. Gives Date and time.
+----- EOMONTH(): Returns the last day of a month. e.g: EOMONTH(date); Gives date.
+
+---- Format & Casting:
+----- Default formating code: yyyy-MM-dd HH(24 hour use 'hh' for 12 hrs):mm:ss
+----- We use international standard(ISO 861) in SQL.
+----- FORMAT(date, format, cultural(optional)): We make the format we want to see. MM/dd/YY(08/20/2025), MM YYYY(Aug 20). 2 time 'dd' will give number, 3 'ddd' will give short name of the day and 'dddd; will give full name for day same goes for month.
+----- CONVERT(data_type, value/colomn, std_code(optional)): 6(20 Aug 25), 112(20250820). Used to convert one data type to other and also do formatting.
+----- FOTMAT(number, format, culture): N(number), C(dollar sign), P(Percentage sign).
+----- CAST(value AS data_type): Used  to change the datatype.
+
+---- Calculations:
+----- DATEADD(part, value_to_add/sub, date): Used to add or subract from the current date.
+----- DATEDIFF(part, start_date, end_date): gets the difference between 2 dates based on the part.
+
+---- Validation:
+----- ISDATE(date): Whether a valid or not valid date. 0(not valid), 1(valid date).
+
+--- 4. Null fns
+---- Nulls? : Nothing or unknown. Means no-value
+---- "null + value = null". By default during aggregations the coloms with null value are not considered except we use fns like the below.
+---- Nulls are treated as smallest values during sorting.
+---- Null to a value:
+----- ISNULL(value, replace_value/other_colomn): Changes null to replace value. Only have 1 value. Faster. Not used by all databases.
+----- COALESCE(value1, value2, value3,...): Returns first not null value in a list. Used by all databases.
+
+----- Usecase in joins:
+----- If we have a null value in both the tables the data should join but will noft because nulls are ignored so we use COALESCE there.
+
+---- Value to Null:
+----- NULLIF(value1, value2): Checks if both values are equal if they are equal then NULL otherwise value1 is returned.
+----- Usecase: Divison by 0
+
+---- Check if value is null or not?
+----- IS NULL: e.g: value IS NULL; --> true, false
+----- IS NOT NULL: e.g: value IS NOT NULL;
+
+-- Multi-row fns: Takes multiple inputs and produces 1 output e.g: SUM().
+--- 1. Aggregate Fns:
+---- COUNT(value / *): Gets the total number of rows.
+---- SUM(value or *): Gets the sum of all values.
+---- AVG(value or *): Gets the average of all values. 
+---- MAX(value or *): Gets the maximum of all vales.
+---- MIN(value or *): Gets the minimum of all vales.
+---- Note: If you are using  "Group by" with Aggregate fns we can get more selected data.
+
+--- 2. Window fns
+---- They are allow us to perform calculations on specific subset of data without loosing the level of details of rows.
+---- GROUP BY: We always get a squezzed data means no same no. of rows the same rows gets joined.
+---- Window fns: We will get all the rows with the result e.g: if we have 4 rows we will get back 4 rows noo row is deleted but with correct data.
+---- TYPES:
+----- a. Aggregation:
+------ Used to get a single value for whole window or frame.
+------ Same fns for aggregation as gernal aggregation fns(MAX, SUM, MIN, AVG, COUNT).
+------ COUNT(expr): Any data type it can accept. COUNT(*) counts every row regardless of NULL. COUNT(colomn) donot count the colomn with null values. Used to check data quality.
+------ AVG(expr): Only takes numeric data types. It returns the average of all values within a window. Ingnores null values(not inclueded in sum as well as in dividing).
+------ SUM(expr): Only takes numeric data types. It returns sum of all the values within a window and null values are ignored. 
+------ MIN(expr): Only takes numeric data types. It gives the minimum value within a window.
+------ MAX(expr): Only takes numeric data types. It returns maximum value within a window.
+------ e.g: 
+            SELECT
+                OrderID,
+                OrderDate,
+                ProductID,
+                SUM(Sales) OVER(PARTITION BY ProductID) TotalSalesByProduct
+            FROM Sales.Orders;
+------ Note: PARTITION BY here is like group by(but window fns gives all the rows)
+------ Note: If we use over with a fn i.e window fn. 
+------ Note: Used when we need more details with the current aggregations.
+
+----- b. Ranking fns:(Always use "ORDER BY" clause with them, "PARTITION BY" is optional and No frame clause allowed)
+
+------ Number based ranking. It asigns number to each value in a window starting from first.(Find top 3 products)
+------- ROW_NUMBER(): Accepts nothing. It gives unique rank to the rows even if they have same ties(same values).
+-------- Used in top N analysis.
+------- RANK(): Accepts nothing. Used to give the rank of each element in the window. It gives unique values to the rows(mostly row number) but handle ties(Gives same rank to the same values).
+------- DENSE_RANK(): Accepts nothing. It gives unique rank to each row and it also handles ties(same values means same rank) but it doesnot leaves gap as RANK() fn.
+------- NTILE(expr/number): Accepts numeric value. It divides rows into specific number of approximate equal size groups(buckets). If the number is even and completely divisible then equal size buckets else larger groups first and add to bucket 1 or so on.
+-------- Bucket size = number of rows/number of buckets(passed as a parameter)
+-------- Used for data segmentation, equalizing load processing(or balancing)
+
+------ Percent based ranking. Fist value zero new values depends on the number of rows.(Find top 20% products)
+------- CUME_RANK()/CUME_DIST(): Accepts nothing. It ranks the data based on cumulative points. CUME_DIST = position_number/number_of_rows. If values are saame then it takes LAST position equal value.  
+------- PERCENT_RANK(): Accepts nothing. Calculates the relative position of each row. PERCENT_RANK = position_number-1/number_of_rows-1. It takes first postion value.
+
+----- c. Value/Analytics fns:
+------ Part 1: (PARTITION BY(Optional), ORDER BY(required), FRAME CLAUSE(not allowed))
+
+------ Points the values to prev or next row.
+
+------ LEAD(expr/colomn, offset/number_of_rows_forward(opt), default_val(optional(opt))): All data types it accepts. Used to get the next value with the current value in a window.
+------ LAG(expr/colomn, offset/number_of_rows_backward(opt), default_val(opt))  : All data types it accepts. Used to get previous value with respect to current value in a window.
+
+------ Part 2: (PARTITION BY(Optional), ORDER BY(required))
+
+------ FIRST_VALUE(expr): All data types it accepts. Used to get the first value of based on the requirements in a window.
+------- FRAME CLAUSE is Optional[Default clause is "UNBOUNDED PRECEDING AND CURRENT ROW"]
+
+------ LAST_VALUE(expr): All data types it accepts. Used to get the last value of based on the requirements in a window.
+------- FRAME CLAUSE is required or should be used.[Default frame "UNBOUNDED PRECEDING AND CURRENT ROW"]
+
+----- Parts of window fn:
+----- e.g: AVG()
+----- Window fn
+----- OVER(): Defines the window
+------ Parts of over():
+------- "PARTITION BY val1, val2" clause: Divides the set into partitions of window(group the data).
+------- "ORDER BY" clause: Used to sort the data
+------- FRAME clause: Used to define subsets within each window that is relavant for the calculations(only use that subset).
+-------- e.g: AVG(Sales) OVER(PARTITION BY Category ORDER BY OrderDate {(ROWS-->1st) BETWEEN (CURENT ROW-->2nd) AND (UNBOUNDED FOLLOWING-->3rd)}-->Frame clause)
+
+-------- 1st part(FRAME TYPE):
+--------- a. ROW
+--------- b. RANGE
+
+-------- 2nd part(Frame Boundary Lower Part):
+--------- CURRENT ROW: Boundary starting is the current row.
+--------- N PRECEDING: Before the current row how much rows are in the boundary.
+--------- UNBOUNDED PRECEDING: No lower boundary start from the start
+
+-------- 3rd part(Frame Boundary Higher Value):
+--------- CURRENT ROW: Boundary ending is the current row.
+--------- N FOLLOWING: means till which row i want window(e.g: 2 FOLLOWING means next 2 rows are included in the from if we at lasts and there is 1 or 2 rows with respect to the current row we only take rows taht have values)
+--------- UNBOUNDED FOLLOWING: No boundary till the last.
+
+-------- Rules for frame clause:
+--------- The "ORDER BY clause" must exist.
+--------- Lower boundary must be before higher boundary value.
+--------- The calcutations are only in that window means nothing outside that window[frame is for that window only].
+--------- Only use shortcuts for the PRECEDING. like "ROW 2 PRECEDING" will work same as "ROW BETWEEN 2 PRECEDING AND CURENT ROW" 
+--------- Default frame for sql is "ROWS BETWEEN UNBOUNDED PRECEDING AND CURRENT ROW" with ORDER BY clause.
+
+-------- Rules for window Functions:
+--------- Used only with SELECT AND ORDER BY no other clause should be used other than these.
+--------- Not used for filtering the data.
+--------- No nesting of window fn is allowed inside another window fn.
+--------- We can use GROUP BY with window fns only if we use the same thing in Window fn i.e we are using in group by(any part of it).
+---------- e.g: SELECT
+                    CustomerID,
+                    SUM(Sales) TotalSales,
+                    RANK() OVER(ORDER BY SUM(Sales) DESC) RankCustomers
+                FROM Sales.Orders
+                GROUP BY CustomerID;
+
+- CASE statements:
+-- Evaluates the list of conditions and return the value when 1st condition is met.
+
+-- Syntax:
+        CASE
+            WHEN <Condition> THEN res1
+            WHEN <Condition2> THEN res2
+            ...
+            ELSE res3 -- optional
+        END;
+-- Usecase:
+--- Used in data transformation means deriiving new data from existing data.
+--- Used in data categorizing.
+
+-- Rule: All data types in result should be same.
+-- Used everywhere(with: WHERE, JOIN, GROUP BY, etc).
+
+- Nested fns:
+-- We can also use one fn inside other fn.
+e.g: LEN(LOWER(LEFT("Maria", 2))); ---> 2("ma")
+
+- Running and Rolling total:
+-- Tracking current sales with target sales.
+-- Providing insights into historical patterns.
+-- Running total means it will aggregates all the values from from start to the current point.
+-- Rolling total means it will aggregates all the values in a fixed window.

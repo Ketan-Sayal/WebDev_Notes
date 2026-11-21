@@ -1,0 +1,293 @@
+- Operators we use with  WHERE clause:
+
+-- Comparision Operators: =, <> !=, >, >=, <, <=
+
+---- Gets all the data ---> filter for res and add only those who satify the condition rest are removed.
+
+---- Expression Operator Expression(condition syntax)
+e.g:
+---- first_name = last_name -- Col1 = Col2
+---- first_name = 'Jhon' -- Col = Value
+---- UPPER(first_name) = 'JHON' -- Function = Value
+---- price * quantity = 1000 -- Expression = Value
+---- (SELECT AVG(sales) FROM oders) = 1000 -- Subquery = value
+
+-- Logical Operators: AND, OR, NOT
+
+--- Gets all the data ---> filter for res and add only those who satify the conditions based on the operator rest are removed.
+
+--- AND: All conditions must be true.
+--- OR: Only one condition must be true.
+
+--- condition1 AND/OR condition2 ....
+
+--- NOT: (Reverse) Excludes matching values.
+
+--- SELECT *
+    FROM table_name
+    WHERE NOT <condition>;
+
+-- Range Operators: BETWEEN
+
+---- Gets all the data ---> filter for res and add only those who satify the condition rest are removed.
+
+--- It will gets the values that is between [val1, val2] inclusive.
+
+--- SELECT *
+    FROM customers
+    WHERE score BETWEEN 100 AND 500;
+
+-- Membership Operators: IN, NOT IN
+
+---- Gets all the data ---> filter for res and add only those who satify the condition rest are removed.
+
+---- IN: Gets the vales that are in the list of values. Used when you are using or operator on same colomn.
+---- NOT IN : Gets the values that are not in the list of values.
+
+-- Search Operators: LIKE
+
+--- Used to match the pattrens 
+
+--- _: exactly 1, %: means anything.
+--- e.g:
+    %r: r should be at last
+    r%: r should be at first
+    %r%: r is required in the value and can be anywhere.
+    __b%: b should be at 3rd pos in the string and there can be anything after b.
+
+-- SELECT *
+    FROM customers
+    WHERE first_name LIKE 'M%';
+
+- Joining data:
+-- Combining colomns is called joins. [Add coloms to the result side by side]
+-- Combining rows is called set operators. [Adds rows to the result one below the other].
+
+-- Joins:
+
+--- Requirement: key colomns are required (common colomn).
+
+--- Why joins?
+---- Recombine the data.(Combine multiple tables)
+---- Data enrichment.(extra data)
+---- Existance of data in another table.
+
+--- Types of joins:
+
+---- No join:
+----- Returns data from the tables without combining them.
+
+----- e.g:
+         SELECT * FROM A;
+         SELECT * FROM B;
+
+----- Inner Join: Both A and B have.
+
+------ Returns the matching rows from both the tables.
+
+------ e.g:
+        SELECT * 
+        FROM A
+        INNER JOIN B
+        ON A.key = B.key;
+
+        SELECT 
+            c.id,
+            c.first_name,
+            o.order_id
+        FROM customers AS c -- We use aliciases because data in the tables can be big so we use full name to specify it and some coloms can be same so we use small names.
+        INNER JOIN orders AS o
+        ON c.id = o.customer_id;
+
+------ Helps in combining tables, data Existance?.
+
+------ Working: (Left table each value of the key we specify amtches each row line by line with right table and if the keys match we will add it to the res table)
+
+----- Full join: Both A and B tables data.
+
+------- Working: (GETS ALL THE DATA FROM LEFT TABLE AND START MACHING EACH ROW FROM RIGHT AND GETS THE DATA AND AT LAST ADD ALL THE DATAA FROM THE RIGHT I.E NOT IN RES TABLE YET AND LEFT TABLE VALUES AS NULL)
+
+------- e.g:
+
+        SELECT *
+        FROM A
+        FULL JOIN B
+        ON A.key = B.key;
+
+        SELECT 
+            c.first_name,
+            c.country,
+            o.order_date,
+            o.sales
+        FROM customers AS c
+        FULL JOIN orders AS o
+        ON c.id = o.customer_id;
+
+----- Left join: All the left table data.
+
+------ Returns all the data of left table and same data of the right table.
+
+------ Here the first table is the source table for data.
+
+------ e.g:
+       SELECT *
+       FROM A
+       LEFT JOIN B
+       ON A.key = B.key;
+
+------- Working: (Insead of seraching and then adding it first adds the values from right table and then search and add the right table values if exists otherwise NULL) 
+
+------ Helps in combining tables, data Existance?, data enrichment.
+
+----- Right join: All the right table data.
+
+------ B taable is the primary source of data.
+
+------ e.g:
+       SELECT *
+       FROM A
+       RIGHT JOIN B
+       ON A.key = B.key;
+
+
+----- Left-anti join:
+------ Return only the rows in the left table that don't matches right table.
+
+------ e.g:
+       SELECT *
+       FROM A
+       LEFT JOIN B
+       ON A.key = B.key
+       WHERE B.key IS NULL;
+
+------ Used for data Existance.
+
+----- Right-anti join:
+------ Return only the rows in the right table that don't matches left table.
+
+------ e.g:
+       SELECT *
+       FROM A
+       RIGHT JOIN B
+       ON A.key = B.key
+       WHERE A.key IS NULL;
+       
+------ Used for data Existance.
+
+----- Full-anti join:
+------ Return only the rows that are not common in both the tables.
+
+------ e.g:
+       SELECT *
+       FROM A
+       FULL JOIN B
+       ON A.key = B.key
+       WHERE A.key IS NULL OR B.key IS NULL;
+       
+------ Used for data Existance
+
+----- Cross join:
+------ Combines every row in the left table with every row in the right table.(All possible outcomes or Combinations).
+
+------ e.g:
+       SELECT *
+       FROM A
+       CROSS JOIN B; -- No need of on as it is not required.
+
+--- Decison tree for choosing joins:
+
+---- only matching: INNER JOIN
+
+---- All rows:
+----- One side is imp: LEFT JOIN
+----- Both sides is imp: FULL JOIN
+
+---- Only unmatching:
+----- One side is imp: LEFT-ANTI JOIN
+----- Both sides is imp: FULL-ANTI JOIN
+
+-- Set operators:
+
+--- Same no. of colomns are required.
+
+--- Rules:
+---- 1. We can use all the clauses in both the select statements but a exception of order by i.e only used once at the last of entire query
+---- 2. No. of colomns in both the table should be same.
+---- 3. All the colomns should be compatible with there respective colmns in the other table.
+---- 4. Order of colomns imn both the queries must be same.
+---- 5. First query is responsible for naming the colomns in response.
+---- 6. Correct colomns should be mapped otherwise you will get a result that donot make sense.
+
+--- Types of set operators:
+
+---- Union:
+
+----- Return all distinct unique rows of both the tables.
+
+----- Working: All the rows from first query table---> distinct rows from the sec table i.e not before.
+
+----- e.g: 
+        SELECT 
+            FirstName,
+            LastName
+        FROM Customers
+        UNION
+        SELECT 
+            FirstName,
+            LastName
+        FROM Employees
+
+
+---- Union all:
+
+----- Returns all the rows that are in both the tables
+
+----- It is very fast as it donot check the distinct coloms.
+
+----- Working: Gets all the rows from the first table query---> Gets all the rows from the second table query
+
+----- e.g: 
+        SELECT 
+            FirstName,
+            LastName
+        FROM Customers
+        UNION ALL
+        SELECT 
+            FirstName,
+            LastName
+        FROM Employees
+
+---- Except(minus):
+
+----- Returns the unique rows from first table query that are not in second table.
+
+----- Working: for a single row? ---> gets a row from the the query from table 1--->Lookup  if it doesnot exist in table 2---> Add it to the result.
+
+----- e.g: 
+        SELECT 
+            FirstName,
+            LastName
+        FROM Customers
+        EXCEPT
+        SELECT 
+            FirstName,
+            LastName
+        FROM Employees
+
+---- Intersect:
+----- Returns all the unique rows that are common in both the tables.
+
+----- e.g: 
+        SELECT 
+            FirstName,
+            LastName
+        FROM Customers
+        INTERSECT
+        SELECT 
+            FirstName,
+            LastName
+        FROM Employees
+
+--- Use cases:
+---- If we want to create a wherehouse add only new data to the wharehouse
+---- If we want to see all the data in 2 tables that are similar.

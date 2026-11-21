@@ -11,7 +11,7 @@
  * Lets just take a editor that only upport text and images. Rest it should be expandable..
  */
 
- // Principle of least knolege:
+ // Principle of least knowlege:
  /**
   * It says you should always talk to your immedate friends or classes.
   * Immedate class is a class which talks to its class to which its depend on.

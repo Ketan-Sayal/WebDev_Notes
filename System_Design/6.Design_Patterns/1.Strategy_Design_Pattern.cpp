@@ -3,7 +3,7 @@
  * The problems solutions is found by other devlopers during application building.
    Using those solutions/steps we also make our application i.e called patterns.
  
-  * So the problems occured during designing a application and people made its solutions then those solutions are called design patterns.
+ * So the problems occured during designing a application and people made its solutions then those solutions are called design patterns.
 
  * These are some steps we have to follow to build our application so on changing the application we have to write minimal code. 
  * To change a application devlopers should write minimal code and give minimal time to it.
@@ -22,6 +22,7 @@
  * Stratergy design patterns defines a family of algorithms, put them into saperate classes so that they can be changed on runtime.
  * So things that are changing the application we will create saperate classesv for them. 
  * Favor composition(Using abstraction of fns) over inheritance.
+ * We can use algorithms interchangibly in the client.
  */
 
 // e.g:

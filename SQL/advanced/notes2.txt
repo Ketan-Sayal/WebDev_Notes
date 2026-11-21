@@ -1,0 +1,79 @@
+- Layers of Database:
+-- 1. Physical layer: This layer defines how the data is stored in database. Managed by database admin
+-- 2. Logical layer: It defines what to store or basically structure of database. Managed by data analyst and devlopers.
+-- 3. View layer: It shows the actal data after prep. Used by the users.
+
+- Views:
+-- Views are the virtual tables that are used to store data in form of select.
+-- Working: User creates a view by giving a query to db engine ---> Db engine then store the dat in disk storage catalog(Both metadata
+    and query) --> if usert query sonething from view then db engine first query the view select statement then on basis of it gets
+    the answer.
+
+-- DDL Command for views:
+--- Syntax:
+        CREATE VIEW V_Name AS(
+            SELECT *
+            FROM table
+            WHERE
+        );
+    
+    DROP VIEW V_Name;
+
+---- For altering the data use:
+----- 1. DROP Command.
+----- 2. Create command.
+
+----- OR 
+----- IF OBJECT_ID('Sales.V_MONTHLY_SUMMARY', 'V') IS NOT NULL
+        DROP VIEW Sales.V_MONTHLY_SUMMARY
+    GO
+    CREATE VIEW Sales.V_MONTHLY_SUMMARY AS( -- USE schema name with view names as default will be dbo
+    SELECT 
+        DATETRUNC(month, OrderDate) OrderMonth,
+        SUM(Sales) TotalSales,
+        COUNT(OrderID) TotalOrders,
+        SUM(Quantity) TotalQuantities
+    FROM Sales.Orders
+    GROUP BY DATETRUNC(month, OrderDate));
+
+-- Use cases:
+--- 1. Data security: restrict some rows or colomns for the users due to sensitive data.
+--- 2. Data Flexibility: You can change the view data easily
+--- 3. Change language easily.
+--- 4. Used as data marts in data wharehouse.
+
+- Tables:
+-- They are used to repersent data in form of rows and colomns.
+
+-- Types of tables:
+--- 1. permanent table: Stays forever in the database.
+---- a. CREATE/INSERT
+---- b. CTAS 
+
+--- 2. temporary table: Session ends then table is droped.  
+
+-- CTAS vs Views:
+--- 1. CTAS is faster in retriveing of data than the views because in CTAS we donot need to query the database for data again.
+--- 2. CTAS is harder to maintain than views because its defination cannot be easily changed.
+
+-- Syntax: 
+
+--- CREATE TABLE Table_Name AS(
+        SELECT
+        FROM 
+        WHERE
+    )-- Not ussed in mssql but in other dataabases.
+
+--- SELECT
+    INTO Table_Name
+    FROM
+    WHERE -- Uwed in mssql
+
+-- Tempoary tables:
+--- These tables are only live till the database is closed or session is expired.
+
+--- Syntax:
+---- SELECT
+     INTO #Table_Name
+     FROM
+     WHERE

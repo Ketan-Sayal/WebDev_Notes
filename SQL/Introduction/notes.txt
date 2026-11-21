@@ -1,0 +1,150 @@
+What is sql?
+- Everything in data and companies generate lots of data so, the companies stores data in the database
+- Database stores data in organized manner instead of dumping anything randomly.(Container)
+- We use sql(stuctured query language) to talk to a database.
+- sql(client ask something)-->database-->(database respond to the user and gives back data).
+- We cannot use excel instead  of a database because excel cannot handle big data.
+- client-->sql-->[DBMS(database management system)-->database]server(a machine where database lives)
+
+Types of databases:
+- Relational databases: 
+    - Each table is in relation with some other table.
+    - e.g: mysql, postgres sql, etc.
+    
+- NO-SQL database:
+    - key-value database: data stored in form of key and value.
+    - graph database: data stored in form of nodes.
+    - colomn based database: data is stored in form of colomns.
+    - Document database: data is stored in form of Documents
+    - e.g: Mongodb
+
+Note: server-->Databases-->Schemas(stucture of the data or tables)-->tables
+
+Table?
+- It is like a spreadsheet that stores data in rows and colomns.
+- Each colomn repersent some unique feild.
+- Rows repersents the actual records or data.
+
+Primary key:
+- Its a unique identifier corresponds to a single row in the table.
+
+Data Types:
+- Numeric: int, decimal
+- Text: char, varchar
+- Date and time: Date, Time
+  
+  Some more things:
+
+- DDL(data defination language):
+    - It is used to define defination of our data means how should the data looks:
+    - create, drop, alter
+
+- DML(Data modification language):
+    - used to modify the existing data or add the data
+    - insert, update and delete
+
+- DQL(Data query language):
+    - Used to query data from the database.
+    - select
+
+why sql?
+- Needed for talking to database
+- High demand
+- Many tools like power-bi, kafka, etc needed sql to do your work.
+
+Clauses in sql:
+1. SELECT
+2. DISTINCT: Removes duplicate values based on a colomn
+3. TOP: used to limit the number of rows in the table(start from 1)(all data-->makee cut-->returns data)
+4. FROM
+5. JOIN
+6. WHERE : Filter the data(Selects all data first--->Removes the unwanted rows-->returns the data). used before aggregation to filter based on colomns values
+7. HAVING: Also used to filter the data after the aggregation so we can only use it after GROUP BY only(no where clause is used) (query all data-->aggregation data(GROUP BY)-->filtered the data-->returns data)
+8. GROUP BY: It combines rows based on same value/ Aggregate a colomn by another colomn (select all-->Combine rows based on same values-->do its task-->returns data). Non aggregated colomns(Donot have any fns on them) must be the part of group by
+9. ORDER BY: Used to sort the data (SELECT data_want FROM table_name ORDER BY colomn1_name DESC/ASC, colomn2_name DESC/ASC) by default acending(ASC) but note the sorting start from colomn1 and secoundary sorting is done based on colomn2
+
+ORDER of each clause in coding:
+- SELECT DISTINCT TOP 2
+    col,
+    col2,
+    SUM(col3)
+FROM table 
+WHERE col =1
+GROUP BY col
+HAVING SUM(col3) = 10
+ORDER BY col ASC
+
+ORDER of Execution:
+- FROM-->WHERE-->GROUP BY-->HAVING-->SELECT DISTINCT-->ORDER BY-->TOP
+
+STATIC VALUES IN SQL:
+SELECT 'Hello' as static_variable -- gets the static value that are given by us in colomn static_variable
+- These are the values that are given by us.
+
+Highlight feature:
+- If we select and highlight something in the query in sql only that thing gets executed others are ignored.
+
+DDL(Data defination language):
+- CREATE:
+
+-- used to create a table.
+
+-- CREATE TABLE persons(
+	    id NOT NULL --OR  id INT PRIMARY KEY  IDENTITY(1, 1), -- IN SQL SERVER WE USE IDENTITY(START_FROM, INCREMENT_VALUE),
+	    person_name VARCHAR(50) NOT NULL,
+	    birth_day DATE,
+	    phone VARCHAR(15) NOT NULL,
+        CONSTRAINT pk_persons PRIMARY KEY (id) 
+    );
+
+- ALTER
+-- Used to change the defination of the table.
+
+--  ALTER TABLE persons
+    ADD email VARCHAR(50) NOT NULL; -- add the colomn to last
+
+--  ALTER TABLE persons
+    DROP COLUMN phone; -- DELETE THE COLUMN
+
+--  ALTER TABLE persons
+    ALTER COLUMN person_name VARCHAR(66) NOT NULL; --MODIFY THE CURRENT COLUMN
+
+- DROP
+-- Delete the whole table with stucture from database.
+
+--  DROP TABLE persons;
+
+DML(Data manupulation language)
+- INSERT:
+-- Used to insert data in a table.
+
+-- INSERT INTO TABLE_NAME (COL1, COL2) 
+   VALUES(VAL1, VAL2); -- both the values should match to its corresponding colomn types
+
+-- INSERT INTO persons(person_name, birth_day, phone)
+    SELECT 
+        first_name,
+        NULL,
+        'Unknown'
+    FROM customers; -- insert data from another table(query the data from the source table and insert it into target table)
+
+- UPDATE:
+-- Used to update the row.
+
+-- UPDATE table_name
+    SET col1 = 1,
+        col2 = 2
+    WHERE <condition> -- If there is no WHERE caluse it will update all the rows
+
+-- For NULL we use "IS" in the condition not "=".
+
+- DELETE:
+-- Used to delete the data from the table.
+
+-- DELETE FROM table_name
+   WHERE <condition> -- syntax
+
+
+----- DELETE all the data in the table -----
+-- TRUNCATE TABLE persons; -- fast
+-- DELETE FROM persons; -- slow

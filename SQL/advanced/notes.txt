@@ -1,0 +1,186 @@
+- Extracting data and using it effectively is very hard.
+
+-- Problems:
+--- Many people want data from our database so they write quries and if you compare each query side by side their will be redunduncy in the logic.
+--- Performance issues in queries.
+--- Complex queries are hard to maintain.
+--- DB Stress due to same queries agi.
+--- Security issues
+
+-- Solutions are:
+--- Subqueries
+--- CTE(Common table expression)
+--- Views
+--- Temp tables
+--- CTAS(Create table as select)
+
+- Parts of a client server arch:
+-- Client
+--- write queries and sub-queries.
+
+-- Server
+--- Its the place where database lives
+
+--- Parts of database:
+---- 1. Database engine:
+----- It helps in retriveing, creation and updation of data.
+
+---- 2. Storage:
+----- a. Disk Storage
+------ Its a permanent storage where data is permanently stored. But it is slow.
+
+------ Parts:
+------- Temp: Used to store temporary query data.
+------- User: Main contents of data that user uses. 
+------- Catalog: Meta-data information of database. Not only the structue but also other data like size and all the things.("Information_Schema.thing" i.e the Catalog)
+
+----- b. Cache Storage
+------ Its a fast and short-term memory where data is stored temporarily.
+
+- Subqueries
+-- Query inside another query.
+-- Used  by main query.(Outer query)
+-- After getting and using the result of sub-query the result is lost.
+
+-- Categories:
+--- 1. Dependency:
+---- a. Non-correlated Subqueries: Sub query donot depend on main query. It is independent and executes first.
+---- B. Correlated Subqueries: Sub query depend on main query. Main query is executed and based on it, it gives back result
+
+--- 2. Result Types:
+---- a. Scalar subquery: Single value is returned.
+---- b. Row subquery: Single colomn but multiple rows.
+---- c. Table subquery: Multiple colomns and multiple rows.
+
+
+
+--- 3. Location and clauses:
+---- a. SELECT
+
+----- SELECT
+            col1,
+            (SELECT col1, col2 WHERE condition) AS alias // single value
+      FROM table
+
+----- Workinng: Subquery is executed first and its result is returned then the main query gets the result an treat it as a static value and return the orignal result.
+
+---- b. FROM: Use the transform data to get the actual result.
+
+----- e.g: SELECT col1, col2
+           FROM (SELECT col1, col2 WHERE condition) AS alias;
+
+----- Working: user_gives_query ---> SQL engine processes it ---> it identifies the subquery ---> execute it and gets the result and store the result in chache ---> sql engine gets the result for the main query and from the result in chache --_> Sends back the result
+
+---- c. JOIN
+
+---- d. WHERE: Used in comparison and logical operators.
+
+---- e. ANY/ALL logical operator
+----- ANY: Used to check if any value matches within the list. 
+----- ALL: Used to check if all values matches within the list.
+
+----- Syntax:
+        SELECT col1, col2
+        FROM table
+        WHERE col1 < ALL/ANY(SELECT colomn FROM table WHERE condition);
+
+---- f. EXISTS/NOT EXISTS:
+----- Checks whether subquery returns any row.
+
+----- Syntax:
+        SELECT col1, col2
+        FROM table1 t1
+        WHERE EXISTS(
+            SELECT 1
+            FROM table2 t2
+            WHERE t1.CustomerID = t2.CustomerID
+        )// if EXISTS returns true then it is included in result.
+
+
+- CTE(Common table expression):
+-- Its a tempoary named result that can be used multiple times within a query.
+-- Working same as Non-correlated subquery.
+-- We can query the data from the table, join the table with CTE.
+-- Clear readibility due to modularity.
+-- Fast retrival of data due to storage in cache.
+-- They can be used Multiple times.
+-- Cannot use ORDER BY clause.
+
+-- Types:
+
+--- Non recursive CTE: It executes only once.
+
+---- Standalone CTE: defined and used independently. It donot depends om other CTEs.
+---- Syntax:
+----- WITH CTE_Name AS (
+        SELECT *
+        FROM WHERE
+     )
+
+     SELECT * FROM CTE_Name;
+
+----- When we use multiple CTE's in main query.
+
+---- Syntax:
+----- WITH CTE_Name AS (
+        SELECT *
+        FROM WHERE
+     ), CTE_Name2 AS (
+        SELECT *
+        FROM WHERE
+     )
+
+---- Nested CTE:
+----- It is the CTE inside another CTE.
+
+---- Syntax:
+----- WITH CTE_Name AS (
+        SELECT *
+        FROM WHERE
+     ), // Stand-alone CTE.
+     CTE_Name2 AS (
+        SELECT *
+        FROM  CTE_Name
+        WHERE
+     ) // Nested CTE.
+
+
+--- Recursive CTE: It executes again and again until a certain condition is met.
+
+---- It adds result of each loop as a row to the result set until the condition is met.
+
+---- Default value of MAXRECURSION in OPTION is 100 only to change it use OPTION(MAXRECURSION 200) at the end of CTE query like:
+
+        SELECT 
+                * 
+        FROM Series
+        OPTION(MAXRECURSION 200);
+
+---- Syntax:
+----- WITH CTE_Name AS(
+        SELECT
+        FROM WHERE // Anchor query
+           
+        UNION ALL
+
+        SELECT 
+        FROM CTE_Name
+        WHERE <condition to stop> // Recursive query
+     )
+
+---- e.g:
+        WITH Series AS(
+                SELECT
+                1 AS MyNumber
+ 
+                UNION ALL
+
+                SELECT
+                        MyNumber + 1 
+                FROM Series
+                WHERE MyNumber < 200
+        )
+---- Working: The anchor query is executed first, only once and the recursive query is executed again and and again and use the prev row as it value.
+
+- Data wharehouse:
+-- Its a special database that  collects data from various sources and enable analytics and support decision-making.
