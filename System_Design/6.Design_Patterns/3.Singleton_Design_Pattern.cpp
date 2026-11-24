@@ -39,7 +39,7 @@ public:
         return instance;
     }
 
-    // Eager method
+    // Eager method+
     static Singleton* getInstanceEager() {
         return instance;
     }
